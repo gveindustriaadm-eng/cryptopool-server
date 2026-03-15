@@ -2,48 +2,56 @@ const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 app.use(cors());
 
+// SERVIR OS ARQUIVOS DO JOGO
+app.use(express.static(path.join(__dirname, "game")));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "game/index.html"));
+});
+
 const server = http.createServer(app);
 
-const io = new Server(server,{
-cors:{origin:"*"}
+const io = new Server(server, {
+  cors: { origin: "*" }
 });
 
 let waitingPlayer = null;
 
-io.on("connection",(socket)=>{
+io.on("connection", (socket) => {
 
-console.log("Jogador conectado:",socket.id);
+  console.log("Jogador conectado:", socket.id);
 
-socket.on("find_match",()=>{
+  socket.on("find_match", () => {
 
-if(waitingPlayer == null){
+    if (waitingPlayer == null) {
 
-waitingPlayer = socket;
-socket.emit("waiting");
+      waitingPlayer = socket;
+      socket.emit("waiting");
 
-}else{
+    } else {
 
-socket.emit("match_found");
-waitingPlayer.emit("match_found");
+      socket.emit("match_found");
+      waitingPlayer.emit("match_found");
 
-waitingPlayer = null;
+      waitingPlayer = null;
 
-}
+    }
 
-});
+  });
 
-socket.on("disconnect",()=>{
-console.log("Jogador desconectado:",socket.id);
-});
+  socket.on("disconnect", () => {
+    console.log("Jogador desconectado:", socket.id);
+  });
 
 });
 
 const PORT = process.env.PORT || 3000;
 
-server.listen(PORT,()=>{
-console.log("Servidor rodando na porta",PORT);
+server.listen(PORT, () => {
+  console.log("Servidor rodando na porta " + PORT);
 });
