@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="manifest" href="/manifest.json">
+
+<meta name="theme-color" content="#000000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>CRYPTO POLL</title>
+
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/orientation_utils.css">
+<link rel="stylesheet" href="css/ios_fullscreen.css">
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="msapplication-tap-highlight" content="no">
+
+<link rel="shortcut icon" href="./favicon.ico"/>
+
+<!-- CORE LIBRARIES -->
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/easeljs-NEXT.min.js"></script>
+<script src="js/tweenjs.js"></script>
+<script src="js/three.min.js"></script>
+<script src="js/screenfull.js"></script>
+<script src="js/sprintf.min.js"></script>
+<script src="js/platform.js"></script>
+<script src="js/ios_fullscreen.js"></script>
+<script src="js/howler.min.js"></script>
+
+<!-- ENGINE -->
+<script src="js/ctl_utils.js"></script>
+<script src="js/sprite_lib.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/CLang.min.js"></script>
+
+<!-- GAME CORE -->
+<script src="js/CAreYouSurePanel.js"></script>
+<script src="js/CInputController.js"></script>
+<script src="js/CPreloader.js"></script>
+<script src="js/CMain.js"></script>
+
+<!-- INTERFACE -->
+<script src="js/CTextButton.js"></script>
+<script src="js/CGfxButton.js"></script>
+<script src="js/CToggle.js"></script>
+<script src="js/CMenu.js"></script>
+<script src="js/CDifficultyMenu.js"></script>
+<script src="js/CGame.js"></script>
+<script src="js/CInterface.js"></script>
+<script src="js/CScene.js"></script>
+<script src="js/CCreditsPanel.js"></script>
+
+<!-- TABLE -->
+<script src="js/CTable.js"></script>
+<script src="js/CGUIExpandible.js"></script>
+<script src="js/CEdge.js"></script>
+<script src="js/CVector2.js"></script>
+<script src="js/CMath.js"></script>
+<script src="js/CCTLText.js"></script>
+
+<!-- GAME OBJECTS -->
+<script src="js/CBall.js"></script>
+<script src="js/CStick.js"></script>
+<script src="js/CPhysicsController.js"></script>
+<script src="js/CPlayerGUI.js"></script>
+<script src="js/CBallSpinGUI.js"></script>
+<script src="js/CGameOverPanel.js"></script>
+<script src="js/CHandBallDrag.js"></script>
+<script src="js/CEffectText.js"></script>
+<script src="js/CInteractiveHelp.js"></script>
+<script src="js/CButLang.js"></script>
+<script src="js/CRollingScore.js"></script>
+<script src="js/CScoreGUI.js"></script>
+<script src="js/CShotPowerBar.js"></script>
+<script src="js/CLocalStorage.js"></script>
+
+</head>
+
+<body ondragstart="return false;" ondrop="return false;">
+
+<div style="position:fixed;top:0;left:0;width:100%;height:100%"></div>
+
+<script>
+
+$(document).ready(function(){
+
+var oMain = new CMain({
+
+audio_enable_on_startup:false,
+fullscreen:true,
+check_orientation:true,
+points_for_ball_pot:20,
+points_for_fault:-40
+
+});
+
+$(oMain).on("start_session", function(evt){
+
+if(getParamValue('ctl-arcade') === "true"){
+parent.__ctlArcadeStartSession();
+}
+
+});
+
+$(oMain).on("end_session", function(evt){
+
+if(getParamValue('ctl-arcade') === "true"){
+parent.__ctlArcadeEndSession();
+}
+
+});
+
+$(oMain).on("save_score", function(evt,iScore){
+
+if(getParamValue('ctl-arcade') === "true"){
+parent.__ctlArcadeSaveScore({score:iScore});
+}
+
+});
+
+if(isIOS()){
+setTimeout(function(){sizeHandler();},200);
+}else{
+sizeHandler();
+}
+
+});
+
+</script>
+
+<div class="check-fonts">
+<p class="check-font-1">1</p>
+</div>
+
+<canvas id="canvas_game" width="1920" height="1080"></canvas>
+<canvas id="canvas_3d" width="1920" height="1080"></canvas>
+<canvas id="canvas_upper_3d" width="1920" height="1080"></canvas>
+
+<div data-orientation="landscape" class="orientation-msg-container">
+<p class="orientation-msg-text">Please rotate your device</p>
+</div>
+
+<div id="block_game" style="position:fixed;width:100%;height:100%;display:none"></div>
+
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<script src="js/multiplayer.js"></script>
+
+<script>
+if("serviceWorker" in navigator){
+navigator.serviceWorker.register("/service-worker.js")
+.then(()=>console.log("SW registrado"));
+}
+</script>
+
+</body>
+</html>
