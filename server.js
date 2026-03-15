@@ -1,57 +1,52 @@
-const express = require("express");
-const http = require("http");
-const { Server } = require("socket.io");
-const cors = require("cors");
-const path = require("path");
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>8 BALL PRO</title>
 
-const app = express();
-app.use(cors());
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/orientation_utils.css">
+<link rel="stylesheet" href="css/ios_fullscreen.css">
 
-// SERVIR OS ARQUIVOS DO JOGO
-app.use(express.static(path.join(__dirname, "game")));
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "game/index.html"));
-});
+</head>
 
-const server = http.createServer(app);
+<body style="background-color:#000;">
 
-const io = new Server(server, {
-  cors: { origin: "*" }
-});
+<canvas id="canvas" width="1280" height="640"></canvas>
 
-let waitingPlayer = null;
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/createjs.min.js"></script>
+<script src="js/howler.min.js"></script>
 
-io.on("connection", (socket) => {
+<script src="js/platform.js"></script>
+<script src="js/screenfull.js"></script>
 
-  console.log("Jogador conectado:", socket.id);
+<script src="js/sprite_lib.js"></script>
+<script src="js/ctl_utils.js"></script>
+<script src="js/settings.js"></script>
 
-  socket.on("find_match", () => {
+<script src="js/CLang.min.js"></script>
 
-    if (waitingPlayer == null) {
+<script src="js/CVector2.js"></script>
+<script src="js/CMath.js"></script>
 
-      waitingPlayer = socket;
-      socket.emit("waiting");
+<script src="js/CPreloader.js"></script>
+<script src="js/CMain.js"></script>
 
-    } else {
+<script>
+$(document).ready(function(){
 
-      socket.emit("match_found");
-      waitingPlayer.emit("match_found");
-
-      waitingPlayer = null;
-
-    }
-
-  });
-
-  socket.on("disconnect", () => {
-    console.log("Jogador desconectado:", socket.id);
-  });
+    var oMain = new CMain({
+        audio_enable_on_startup:false,
+        fullscreen:true,
+        check_orientation:true
+    });
 
 });
+</script>
 
-const PORT = process.env.PORT || 3000;
-
-server.listen(PORT, () => {
-  console.log("Servidor rodando na porta " + PORT);
-});
+</body>
+</html>
