@@ -19,8 +19,6 @@ const io = new Server(server, {
   cors: { origin: "*" }
 });
 
-let waitingPlayer = null;
-
 io.on("connection", (socket) => {
   console.log("Jogador conectado:", socket.id);
 });
